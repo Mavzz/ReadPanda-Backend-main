@@ -1,5 +1,6 @@
 const { accountsRepo } = require("../Model/Schema");
 const helper = require("../Utilities/helper");
+const jwt = require("jsonwebtoken");
 
 
 exports.signUp = async (req, res) => {
@@ -61,6 +62,9 @@ exports.loginCheck = async (req, res) => {
         },
       });
     }
+    const token = jwt.sign({ username: req.body.username }, "secret", {
+      expiresIn: "1h",
+    });
 
     if (userDetails.length > 0) {
       res.status(200).json({
@@ -68,6 +72,7 @@ exports.loginCheck = async (req, res) => {
         results: userDetails.length,
         data: {
           message: "YAY!! User found!!",
+          token: token,
         },
       });
     } else {
