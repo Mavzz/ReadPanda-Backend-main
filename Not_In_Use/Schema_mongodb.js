@@ -1,28 +1,21 @@
-const mongoose = require("mongoose");
-
-mongoose
-  .connect("mongodb://localhost:27017/ReadPanda", {})
-  .then(() => console.log("DB connection successful!"));
-
 function validatorphoneNumber (phoneNumber) {
   let phoneNumberPattern = /^[0-9]{10}$/;
   return phoneNumberPattern.test(phoneNumber);
 }
 
-function validatorEmail (email) {
+function validatorEmail(email) {
   let emailPattern =
     /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
   return emailPattern.test(email);
 }
 
-function validatorPassword (password) {
+function validatorPassword(password) {
   let emailPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
   return emailPattern.test(password);
 }
 
-
 //Schema
-const account = new mongoose.Schema({
+const account = new connectDB.Schema({
   username: {
     type: String,
     unique: true,
@@ -62,8 +55,9 @@ const account = new mongoose.Schema({
 });
 
 //Model
-const accountsRepo = mongoose.model("Account", account);
+const accountsRepo = connectDB.model("accounts", account);
 
 module.exports = {
-  accountsRepo
+  accountsRepo,
+  gridfsBucket,
 };
