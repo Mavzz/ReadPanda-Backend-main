@@ -1,12 +1,11 @@
-const express = require("express");
-
+import express from 'express';
+import { createUser, loginUser } from "../Controller/users.js";
 
 const routing = express.Router();
-const users = require("../Controller/users");
 
-routing.post("/signup", users.signUp);
+routing.post("/signup", createUser);
 
-routing.get("/auth/login", users.loginCheck);
+routing.get("/auth/login", loginUser);
 
 
-module.exports = routing;
+export default routing;

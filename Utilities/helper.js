@@ -1,12 +1,23 @@
-const bcrypt = require("bcrypt");
+import bcrypt from 'bcrypt';
 
-exports.cryptPassword = (password) => {
-  let psswd = bcrypt.hashSync(password, 10);
-  return psswd;
+/**
+ * Encrypts a password using bcrypt.
+ * @param {string} password - The password to encrypt.
+ * @returns {Promise<string>} - The encrypted password.
+ */
+export const cryptPassword = async (password) => {
+  const saltRounds = 10;
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  return hashedPassword;
 };
 
-exports.decryptPassword = (password) => {
-  let hash = this.cryptPassword(password);
-  let compared = bcrypt.compareSync(password, hash);
-  return compared;
+/**
+ * Decrypts a password using bcrypt.
+ * @param {string} password - The password to decrypt.
+ * @param {string} hash - The hash to compare against.
+ * @returns {Promise<boolean>} - Whether the password matches the hash.
+ */
+export const decryptPassword = async (password, hash) => {
+  const match = await bcrypt.compare(password, hash);
+  return match;
 };

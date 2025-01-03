@@ -1,13 +1,14 @@
-const express = require('express');
-const bodyparser = require("body-parser");
-const route = require("./Routes/routing");
-const dotenv = require("dotenv");
+import express from 'express';
+import bodyParser from 'body-parser';
+import routes from './Routes/routing.js';
+import dotenv from 'dotenv';
+import client from "./Database/config.js";
 dotenv.config();
 
 const app = express();
 
 // Middleware for parsing request body
-app.use(bodyparser.json());
+app.use(bodyParser.json());
 
 app.use((req, res, next) =>{
   res.setHeader("access-control-allow-origin", "*");
@@ -16,8 +17,15 @@ app.use((req, res, next) =>{
   next();
 })
 
+// Connect to the database
+client
+  .connect()
+  .then(() => console.log("Connected to PostgreSQL"))
+  .catch((err) => console.error("Connection error", err.stack));
+
+
 // Routes for API endpoints
-app.use("/", route);
+app.use("/", routes);
 
 // Server listening on port 3000 for incoming requests
 const port = process.env.PORT || 3000;
