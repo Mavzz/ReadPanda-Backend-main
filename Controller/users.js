@@ -1,7 +1,10 @@
-import client from "../Database/config.js";
-import { cryptPassword, decryptPassword } from "../Utilities/helper.js";
-
+import client from '../Database/config.js';
+import { cryptPassword, decryptPassword } from '../Utilities/helper.js';
+import CryptoJS from "crypto-js";
+import dotenv from 'dotenv';
 import jwt from "jsonwebtoken";
+
+dotenv.config();
 
 /**
  * Get all users from the database.
@@ -32,11 +35,15 @@ export const createUser = async (req, res) => {
     );
 
     if (userCheck.rows.length > 0) {
-      return res.status(400).json({ error: "User already exists" });
+      return res.status(409).json({ error: "User already exists" });
     }
 
+    // Decrypt the password
+    const bytes = CryptoJS.AES.decrypt(password, process.env.CRYPTO_SECRET);
+    const decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
+
     // Insert new user
-    const hashedPassword = cryptPassword(password);
+    const hashedPassword = cryptPassword(decryptedPassword);
 
     const result = await client.query(
       "INSERT INTO users (username, password, email, isactive) VALUES ($1, $2, $3, $4) RETURNING *",
@@ -56,6 +63,11 @@ export const createUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   const { username, password } = req.body;
   try {
+
+    // Decrypt the password
+    const bytes = CryptoJS.AES.decrypt(password, process.env.CRYPTO_SECRET);
+    const decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
+
     // Check if user exists
     const userCheck = await client.query(
       "SELECT * FROM users WHERE username = $1",
@@ -63,16 +75,16 @@ export const loginUser = async (req, res) => {
     );
 
     if (userCheck.rows.length === 0) {
-      return res.status(400).json({ error: "Invalid username or password" });
+      return res.status(401).json({ error: "Invalid username or password" });
     }
 
     const user = userCheck.rows[0];
 
     // Verify password
-    const isPasswordValid = decryptPassword(password, user.password);
+    const isPasswordValid = decryptPassword(decryptedPassword, user.password);
 
     if (!isPasswordValid) {
-      return res.status(400).json({ error: "Invalid username or password" });
+      return res.status(401).json({ error: "Invalid username or password" });
     }
 
     // Generate JWT token

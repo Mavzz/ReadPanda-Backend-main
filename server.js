@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import routes from './Routes/routing.js';
 import dotenv from 'dotenv';
-import client from "./Database/config.js";
+import client from './Database/config.js';
 dotenv.config();
 
 const app = express();

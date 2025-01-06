@@ -1,11 +1,15 @@
 import express from 'express';
-import { createUser, loginUser } from "../Controller/users.js";
+import { createUser, loginUser, getUsers } from "../Controller/users.js";
 
-const routing = express.Router();
+const router = express.Router();
 
-routing.post("/signup", createUser);
+// Route to get all users
+router.get('/users', getUsers);
 
-routing.get("/auth/login", loginUser);
+// Route to create a new user
+router.post("/signup", createUser);
 
+// Route to login a user
+router.post("/auth/login", loginUser);
 
-export default routing;
+export default router;

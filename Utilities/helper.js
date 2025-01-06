@@ -5,10 +5,11 @@ import bcrypt from 'bcrypt';
  * @param {string} password - The password to encrypt.
  * @returns {Promise<string>} - The encrypted password.
  */
-export const cryptPassword = async (password) => {
+export const cryptPassword = (password) => {
   const saltRounds = 10;
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
-  return hashedPassword;
+  //const hashedPassword = await bcrypt.hash(password, saltRounds);
+  //return hashedPassword;
+  return bcrypt.hashSync(password, saltRounds);
 };
 
 /**
@@ -17,7 +18,8 @@ export const cryptPassword = async (password) => {
  * @param {string} hash - The hash to compare against.
  * @returns {Promise<boolean>} - Whether the password matches the hash.
  */
-export const decryptPassword = async (password, hash) => {
-  const match = await bcrypt.compare(password, hash);
-  return match;
+export const decryptPassword = (password, hash) => {
+  //const match = await bcrypt.compare(password, hash);
+  //return match;
+  return bcrypt.compareSync(password, hash);
 };
