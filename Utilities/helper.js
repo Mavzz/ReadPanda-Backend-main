@@ -1,4 +1,6 @@
 import bcrypt from 'bcrypt';
+import jwt from "jsonwebtoken";
+import client from '../Database/config.js';
 
 /**
  * Encrypts a password using bcrypt.
@@ -22,4 +24,23 @@ export const decryptPassword = (password, hash) => {
   //const match = await bcrypt.compare(password, hash);
   //return match;
   return bcrypt.compareSync(password, hash);
+};
+
+export const checkToken = (token, JWT_SECRET) => {
+  if( jwt.verify(token, JWT_SECRET)){
+      return true;
+  } else {    
+      return false;
+  }
+};
+
+
+export async function getUserId(username) {
+
+  const userId = (await client.query(
+    "SELECT id FROM users WHERE username = $1",
+    [username]
+  )).rows[0].id;
+
+  return userId;
 };
