@@ -15,7 +15,7 @@ export const getUserPreferences = async (req, res) => {
     const token = authHeader && authHeader.split(' ')[1];  // Bearer <token>
     const { username } = req.query;
 
-    console.log(token);
+    //console.log(token);
     console.log(username);
 
     if(checkToken(token, process.env.JWT_SECRET)){
@@ -43,7 +43,7 @@ export const getUserPreferences = async (req, res) => {
                   });
             }
 
-            console.log(preferencesArray);
+            //console.log(preferencesArray);
             preferences = await client.query(
                 "INSERT INTO user_preferences (user_id, preferences) VALUES ($1, $2)",
                 [userId, preferencesArray]
@@ -56,7 +56,7 @@ export const getUserPreferences = async (req, res) => {
                 "SELECT preferences FROM user_preferences WHERE user_id = $1",
                 [userId]
               );
-                console.log('User preferences retrieved successfully ', preferences.rows[0]);
+                console.log('User preferences retrieved successfully ');
               res.status(200).json(preferences.rows[0].preferences);
             }
     } else {    
@@ -70,7 +70,9 @@ export const getUserPreferences = async (req, res) => {
 export const updateUserPreferences = async (req, res) => {
   try {
     const authHeader = req.header('authorization');
-    const token = authHeader && authHeader.split(' ')[1];  // Bearer <token>
+    let token = authHeader && authHeader.split(' ')[1];  // Bearer <token>
+    token = token.replace(/^"|"$/g, '');
+    //console.log(token);
     const { username } = req.query;
     let { preferences } = req.body;
 
@@ -89,6 +91,7 @@ export const updateUserPreferences = async (req, res) => {
         res.status(401).json({ error: "Unauthorized" });
     }
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 };
