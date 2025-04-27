@@ -1,6 +1,9 @@
 import express from 'express';
 import { createUser, loginUser, getUsers } from "../Controller/users.js";
 import { getUserPreferences, updateUserPreferences } from "../Controller/user_preferences.js";
+import { fileuploader } from '../Controller/fileController.js';
+import multer from 'multer';
+const upload = multer();
 
 const router = express.Router();
 
@@ -18,4 +21,6 @@ router.get("/user/preferences", getUserPreferences);
 
 router.post("/user/preferences", updateUserPreferences);
 
+// Route to upload a file
+router.post("/upload", upload.single('file'), fileuploader);
 export default router;
