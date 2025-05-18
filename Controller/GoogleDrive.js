@@ -1,6 +1,4 @@
-const { google } = require('googleapis');
-const fs = require('fs');
-const path = require('path');
+import google  from 'googleapis';
 
 class GoogleDriveUploader {
   constructor(credentialsPath, tokenPath) {
@@ -59,4 +57,4 @@ class GoogleDriveUploader {
     }
   }
 }
-module.exports = {GoogleDriveUploader};
+export {GoogleDriveUploader};
