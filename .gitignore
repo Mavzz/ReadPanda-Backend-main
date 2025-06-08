@@ -3,7 +3,7 @@
 # dependencies
 node_modules/
 
-serviceAccount.json
+serviceAccountKey.json
 
 # debug
 npm-debug.*
