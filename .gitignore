@@ -3,6 +3,8 @@
 # dependencies
 node_modules/
 
+serviceAccount.json
+
 # debug
 npm-debug.*
 yarn-debug.*

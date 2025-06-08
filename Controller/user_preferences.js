@@ -20,7 +20,7 @@ export const getUserPreferences = async (req, res) => {
 
     if (checkToken(token, process.env.JWT_SECRET)) {
       const user_preferenceCheck = await client.query(
-        "SELECT user_id FROM user_preferences WHERE user_id = (SELECT id FROM users WHERE username = $1)",
+        "SELECT user_id FROM user_preferences WHERE user_id = (SELECT uuid FROM users WHERE username = $1)",
         [username]
       );
 
@@ -28,10 +28,10 @@ export const getUserPreferences = async (req, res) => {
       let preferences;
       if (user_preferenceCheck.rows.length === 0) {
         userId = (
-          await client.query("SELECT id FROM users WHERE username = $1", [
+          await client.query("SELECT uuid FROM users WHERE username = $1", [
             username,
           ])
-        ).rows[0].id;
+        ).rows[0].uuid;
 
         // Insert user preferences and get the inserted preferences
         const preferencesData = {}

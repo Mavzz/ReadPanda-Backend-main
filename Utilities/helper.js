@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 import client from '../Database/config.js';
+import { v4 as uuidv4 } from "uuid";
+import os from 'os';
 
 /**
  * Encrypts a password using bcrypt.
@@ -34,6 +36,22 @@ export const checkToken = (token, JWT_SECRET) => {
   }
 };
 
+export const generateUserUid = () => {
+  return uuidv4(); // Generates a random UUID, e.g., '1b9d67b2-ad0b-426c-8472-a72a1e0501a9'
+}
+
+// ✅ Get local IP dynamically
+export const getLocalIp = () => {
+  const interfaces = os.networkInterfaces();
+  for (const name of Object.keys(interfaces)) {
+    for (const iface of interfaces[name]) {
+      if (iface.family === 'IPv4' && !iface.internal) {
+        return iface.address;
+      }
+    }
+  }
+  return '127.0.0.1'; // fallback
+}
 
 export async function getUserId(username) {
 
@@ -44,3 +62,11 @@ export async function getUserId(username) {
 
   return userId;
 };
+
+const LOGIN_TYPES = Object.freeze({
+  EMAIL: 'email',
+  SOCIAL_GOOGLE: 'social_google',
+  LDAP: 'ldap'
+});
+
+export { LOGIN_TYPES };
