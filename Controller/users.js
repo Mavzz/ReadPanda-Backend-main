@@ -1,5 +1,5 @@
 import client from '../Database/config.js';
-import { cryptPassword, decryptPassword, generateUserUid, LOGIN_TYPES } from '../Utilities/helper.js';
+import { cryptPassword, decryptPassword, generateUserUid, LOGIN_TYPES, generateJWT } from '../Utilities/helper.js';
 import CryptoJS from "crypto-js";
 import dotenv from 'dotenv';
 import jwt from "jsonwebtoken";
@@ -147,7 +147,9 @@ export const googleAuth = async (req, res) => {
     // Generate a unique user ID
     const newUserUid = generateUserUid();
     if (userCheck.rows.length > 0) {
-      return res.status(409).json({ error: "User already exists" });
+      
+      return res.status(200).json({ username: userCheck.rows[0].username, token: generateJWT(userCheck.rows[0].uuid) });
+
     } else {
       // Create a new user if not exists
       const result = await client.query(
@@ -157,15 +159,10 @@ export const googleAuth = async (req, res) => {
       user = result.rows[0];
     }
 
-    // Generate JWT token
-    const jwttoken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-
     const username = user.username;
 
     // Return the user data and token
-    res.status(201).json({ username: username, token: jwttoken });
+    res.status(201).json({ username: username, token: generateJWT(user.uuid) });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

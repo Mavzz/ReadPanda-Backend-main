@@ -98,7 +98,7 @@ export const updateUserPreferences = async (req, res) => {
         [preferences, userId]
       );
 
-      res.status(200).json(updatepreferences.rows[0]);
+      res.status(200).json({"message": "User preferences updated successfully"});
     } else {
       res.status(401).json({ error: "Unauthorized" });
     }

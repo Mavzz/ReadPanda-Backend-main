@@ -56,9 +56,9 @@ export const getLocalIp = () => {
 export async function getUserId(username) {
 
   const userId = (await client.query(
-    "SELECT id FROM users WHERE username = $1",
+    "SELECT uuid FROM users WHERE username = $1",
     [username]
-  )).rows[0].id;
+  )).rows[0].uuid;
 
   return userId;
 };
@@ -68,5 +68,14 @@ const LOGIN_TYPES = Object.freeze({
   SOCIAL_GOOGLE: 'social_google',
   LDAP: 'ldap'
 });
+
+export const generateJWT = (uuid) =>{
+  // Generate JWT token
+  const jwttoken = jwt.sign({ userId: uuid }, process.env.JWT_SECRET, {
+    expiresIn: "1h",
+  });
+
+  return jwttoken;
+}
 
 export { LOGIN_TYPES };
